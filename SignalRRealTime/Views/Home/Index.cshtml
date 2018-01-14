@@ -1,0 +1,72 @@
+﻿@model IEnumerable<SignalRRealTime.Models.Worker>
+
+@{
+    ViewBag.Title = "Index";
+}
+<script src="~/Scripts/jquery-3.2.1.min.js"></script>
+<script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
+<script src="~/signalr/hubs"></script>
+<script>
+    var addhub = $.connection.addHub;
+    var Name = $("#MyName").val();
+    var Surname = $("#MySurname").val();
+    var UserName = $("#MyUsername").val();
+    addhub.client.response = function (Name,Surname,UserName) {
+        $("#veriler").append("<tr><td>" + Name + "</td><td>" + Surname + "</td><td>" + UserName + "</td></tr>");
+    };
+    $.connection.hub.start().done(function () {
+        $("#Gonder").click(function () {
+            addhub.server.affixWorker($("#MyName").val(), $("#MySurname").val(), $("#MyUsername").val());
+          
+        });
+
+
+    });;
+</script>
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table" id="veriler">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Surname)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Surname)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div class="container">
+    <input type="text" id="MyName" />
+    <input type="text" id="MySurname" />
+    <input type="text"   id="MyUsername" />
+    <input type="button"  value="Gönder" id="Gonder" />
+</div>
